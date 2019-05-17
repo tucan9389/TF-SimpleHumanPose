@@ -45,7 +45,7 @@ class Config:
     rotation_factor = 40
 
     ## testing config
-    useGTbbox = False
+    useGTbbox = True
     flip_test = True
     oks_nms_thr = 0.9
     score_thr = 0.2
