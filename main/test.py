@@ -209,7 +209,7 @@ def test(test_model):
     img_start = 0
     ranges = [0]
     img_num = len(np.unique([i['image_id'] for i in dets]))
-    images_per_gpu = 1#int(img_num / len(args.gpu_ids.split(','))) + 1
+    images_per_gpu = img_num#int(img_num / len(args.gpu_ids.split(','))) + 1
     for run_img in range(img_num):
         img_end = img_start + 1
         while img_end < len(dets) and dets[img_end]['image_id'] == dets[img_start]['image_id']:
