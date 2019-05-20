@@ -240,8 +240,8 @@ if __name__ == '__main__':
         args = parser.parse_args()
 
         # test gpus
-        if not args.gpu_ids:
-            args.gpu_ids = str(np.argmin(mem_info()))
+        # if not args.gpu_ids:
+        #     args.gpu_ids = str(np.argmin(mem_info()))
 
         # if '-' in args.gpu_ids:
         #     gpus = args.gpu_ids.split('-')
