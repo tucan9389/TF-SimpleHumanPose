@@ -75,12 +75,12 @@ class Config:
     def denormalize_input(self, img):
         return img + self.pixel_means
 
-    def set_args(self, gpu_ids, continue_train=False):
-        self.gpu_ids = gpu_ids
-        self.num_gpus = len(self.gpu_ids.split(','))
+    def set_args(self, continue_train=False):
+        # self.gpu_ids = gpu_ids
+        # self.num_gpus = len(self.gpu_ids.split(','))
         self.continue_train = continue_train
-        os.environ["CUDA_VISIBLE_DEVICES"] = self.gpu_ids
-        print('>>> Using /gpu:{}'.format(self.gpu_ids))
+        # os.environ["CUDA_VISIBLE_DEVICES"] = self.gpu_ids
+        # print('>>> Using /gpu:{}'.format(self.gpu_ids))
 
 cfg = Config()
 
