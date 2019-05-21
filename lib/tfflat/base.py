@@ -117,7 +117,7 @@ class Base(object):
 
         # initialize tensorflow
         tfconfig = tf.ConfigProto(allow_soft_placement=True, log_device_placement=False)
-        tfconfig.gpu_options.allow_growth = True
+        #tfconfig.gpu_options.allow_growth = True
         self.sess = tf.Session(config=tfconfig)
 
         # build_graph
@@ -214,7 +214,8 @@ class Trainer(Base):
         return dataiter, math.ceil(len(train_data)/self.cfg.batch_size/self.cfg.num_gpus) 
 
     def _make_graph(self):
-        self.logger.info("Generating training graph on {} GPUs ...".format(self.cfg.num_gpus))
+        #self.logger.info("Generating training graph on {} GPUs ...".format(self.cfg.num_gpus))
+        self.logger.info("Generating training graph on {} CPU ...".format(self.cfg.num_gpus))
 
         weights_initializer = slim.xavier_initializer()
         biases_initializer = tf.constant_initializer(0.)
@@ -223,41 +224,42 @@ class Trainer(Base):
 
         tower_grads = []
         with tf.variable_scope(tf.get_variable_scope()):
-            for i in range(self.cfg.num_gpus):
-                with tf.device('/gpu:%d' % i):
-                    with tf.name_scope('tower_%d' % i) as name_scope:
-                        # Force all Variables to reside on the CPU.
-                        with slim.arg_scope([slim.model_variable, slim.variable], device='/device:CPU:0'):
-                            with slim.arg_scope([slim.conv2d, slim.conv2d_in_plane, \
-                                                 slim.conv2d_transpose, slim.separable_conv2d,
-                                                 slim.fully_connected],
-                                                weights_regularizer=weights_regularizer,
-                                                biases_regularizer=biases_regularizer,
-                                                weights_initializer=weights_initializer,
-                                                biases_initializer=biases_initializer):
-                                # loss over single GPU
-                                self.net.make_network(is_train=True)
-                                if i == self.cfg.num_gpus - 1:
-                                    loss = self.net.get_loss(include_wd=True)
-                                else:
-                                    loss = self.net.get_loss()
-                                self._input_list.append( self.net.get_inputs() )
+            # for i in range(self.cfg.num_gpus):
+            #     with tf.device('/gpu:%d' % i):
+            #with tf.name_scope('tower_%d' % i) as name_scope:
+            with tf.name_scope('tower_%d' % 0) as name_scope:
+                # Force all Variables to reside on the CPU.
+                with slim.arg_scope([slim.model_variable, slim.variable], device='/device:CPU:0'):
+                    with slim.arg_scope([slim.conv2d, slim.conv2d_in_plane, \
+                                         slim.conv2d_transpose, slim.separable_conv2d,
+                                         slim.fully_connected],
+                                        weights_regularizer=weights_regularizer,
+                                        biases_regularizer=biases_regularizer,
+                                        weights_initializer=weights_initializer,
+                                        biases_initializer=biases_initializer):
+                        # loss over single GPU
+                        self.net.make_network(is_train=True)
+                        # if i == self.cfg.num_gpus - 1:
+                        loss = self.net.get_loss(include_wd=True)
+                        # else:
+                        #     loss = self.net.get_loss()
+                        self._input_list.append( self.net.get_inputs() )
 
-                        tf.get_variable_scope().reuse_variables()
+                tf.get_variable_scope().reuse_variables()
 
-                        if i == 0:
-                            if self.cfg.num_gpus > 1 and self.cfg.bn_train is True:
-                                self.logger.warning("BN is calculated only on single GPU.")
-                            extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS, name_scope)
-                            with tf.control_dependencies(extra_update_ops):
-                                grads = self._optimizer.compute_gradients(loss)
-                        else:
-                            grads = self._optimizer.compute_gradients(loss)
-                        final_grads = []
-                        with tf.variable_scope('Gradient_Mult') as scope:
-                            for grad, var in grads:
-                                final_grads.append((grad, var))
-                        tower_grads.append(final_grads)
+                # if i == 0:
+                if self.cfg.num_gpus > 1 and self.cfg.bn_train is True:
+                    self.logger.warning("BN is calculated only on single GPU.")
+                extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS, name_scope)
+                with tf.control_dependencies(extra_update_ops):
+                    grads = self._optimizer.compute_gradients(loss)
+                # else:
+                #     grads = self._optimizer.compute_gradients(loss)
+                final_grads = []
+                with tf.variable_scope('Gradient_Mult') as scope:
+                    for grad, var in grads:
+                        final_grads.append((grad, var))
+                tower_grads.append(final_grads)
 
         if len(tower_grads) > 1:
             grads = average_gradients(tower_grads)
@@ -377,15 +379,16 @@ class Tester(Base):
         self.logger.info("Generating testing graph on {} GPUs ...".format(self.cfg.num_gpus))
 
         with tf.variable_scope(tf.get_variable_scope()):
-            for i in range(self.cfg.num_gpus):
-                with tf.device('/gpu:%d' % i):
-                    with tf.name_scope('tower_%d' % i) as name_scope:
-                        with slim.arg_scope([slim.model_variable, slim.variable], device='/device:CPU:0'):
-                            self.net.make_network(is_train=False)
-                            self._input_list.append(self.net.get_inputs())
-                            self._output_list.append(self.net.get_outputs())
+            # for i in range(self.cfg.num_gpus):
+            #     with tf.device('/gpu:%d' % i):
+            #with tf.name_scope('tower_%d' % i) as name_scope:
+            with tf.name_scope('tower_%d' % 0) as name_scope:
+                with slim.arg_scope([slim.model_variable, slim.variable], device='/device:CPU:0'):
+                    self.net.make_network(is_train=False)
+                    self._input_list.append(self.net.get_inputs())
+                    self._output_list.append(self.net.get_outputs())
 
-                        tf.get_variable_scope().reuse_variables()
+                tf.get_variable_scope().reuse_variables()
 
         self._outputs = aggregate_batch(self._output_list)
 

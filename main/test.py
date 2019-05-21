@@ -21,7 +21,7 @@ from model import Model
 
 from gen_batch import generate_batch
 from dataset import Dataset
-from nms.nms import oks_nms
+# from nms.nms import oks_nms
 
 def test_net(tester, dets, det_range, gpu_id):
 
