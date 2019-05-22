@@ -21,7 +21,7 @@ from model import Model
 
 from gen_batch import generate_batch
 from dataset import Dataset
-# from nms.nms import oks_nms
+from nms.nms import oks_nms
 
 def test_net(tester, dets, det_range, gpu_id):
 
@@ -245,8 +245,13 @@ if __name__ == '__main__':
         args = parser.parse_args()
 
         # test gpus
-        # if not args.gpu_ids:
-        #     args.gpu_ids = str(np.argmin(mem_info()))
+        if not args.gpu_ids:
+            args.gpu_ids = str(np.argmin(mem_info()))
+            print("test gpus")
+        print(args.gpu_ids)
+        print("-"*20)
+        print("-" * 20)
+
 
         # if '-' in args.gpu_ids:
         #     gpus = args.gpu_ids.split('-')
