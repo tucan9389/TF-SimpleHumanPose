@@ -77,11 +77,11 @@ class MultiProc(object):
         for p in self._procs:
             p.join()
 
-        if self._dump_method == PICKLE:
-            for i in range(self.nr_proc):
-                id, msg = load_pkl( 'tmp_result_{}'.format(self._proc_ids[i]) )
-                ret[id] = msg
-                del_file('tmp_result_{}.pkl'.format(self._proc_ids[i]))
+        # if self._dump_method == PICKLE:
+        #     for i in range(self.nr_proc):
+        #         id, msg = load_pkl( 'tmp_result_{}'.format(self._proc_ids[i]) )
+        #         ret[id] = msg
+        #         del_file('tmp_result_{}.pkl'.format(self._proc_ids[i]))
 
         result = []
         if self._reduce_method == LIST:
