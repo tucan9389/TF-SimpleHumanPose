@@ -231,7 +231,7 @@ def test(test_model):
         return test_net(tester, dets, range, gpu_id)
 
     # MultiGPUFunc = MultiProc(len(args.gpu_ids.split(',')), func)
-    MultiGPUFunc = MultiProc(0, func)
+    MultiGPUFunc = MultiProc(1, func)
     result = MultiGPUFunc.work()
 
     # evaluation
