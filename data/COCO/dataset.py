@@ -105,6 +105,7 @@ class Dataset(object):
         with open(result_path, 'w') as f:
             json.dump(result, f)
 
+        print(result_path)
         result = gt.loadRes(result_path)
         cocoEval = COCOeval(gt, result, iouType='keypoints')
 
