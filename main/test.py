@@ -244,10 +244,11 @@ if __name__ == '__main__':
         parser.add_argument('--test_epoch', type=str, dest='test_epoch')
         args = parser.parse_args()
 
-        # test gpus
-        if not args.gpu_ids:
-            args.gpu_ids = str(np.argmin(mem_info()))
-            print("test gpus")
+        # # test gpus
+        # if not args.gpu_ids:
+        #     args.gpu_ids = str(np.argmin(mem_info()))
+        #     print("test gpus")
+        args.gpu_ids = "0";
         print(args.gpu_ids)
         print("-"*20)
         print("-" * 20)
