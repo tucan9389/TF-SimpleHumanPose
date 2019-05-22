@@ -180,11 +180,11 @@ def test(test_model):
     # annotation load
     d = Dataset()
     annot = d.load_annot(cfg.testset)
-    print("="*20)
-    print("=" * 20)
-    print(annot)
-    print("=" * 20)
-    print("=" * 20)
+    # print("="*20)
+    # print("=" * 20)
+    # print(annot)
+    # print("=" * 20)
+    # print("=" * 20)
     gt_img_id = d.load_imgid(annot)
     
     # human bbox load
