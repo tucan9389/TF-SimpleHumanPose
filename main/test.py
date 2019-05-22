@@ -25,6 +25,7 @@ from nms.nms import oks_nms
 
 def test_net(tester, dets, det_range, gpu_id):
 
+    print("||||||||||| test_net ||||||||||||")
     dump_results = []
 
     start_time = time.time()
@@ -228,11 +229,6 @@ def test(test_model):
         tester = Tester(Model(), cfg)
         tester.load_weights(test_model)
         range = [ranges[gpu_id], ranges[gpu_id + 1]]
-        print("\n")
-        print("----"*20)
-        print(range)
-        print("----" * 20)
-        print("\n")
         return test_net(tester, dets, range, gpu_id)
 
     # MultiGPUFunc = MultiProc(len(args.gpu_ids.split(',')), func)
