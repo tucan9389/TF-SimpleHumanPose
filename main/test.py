@@ -183,7 +183,8 @@ def test(test_model):
     print("="*20)
     print("=" * 20)
     print(cfg.testset)
-    print("\n\n")
+    print("=" * 20)
+    print("=" * 20)
     gt_img_id = d.load_imgid(annot)
     
     # human bbox load
