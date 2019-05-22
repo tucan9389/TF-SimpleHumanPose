@@ -182,7 +182,7 @@ def test(test_model):
     annot = d.load_annot(cfg.testset)
     print("="*20)
     print("=" * 20)
-    print(cfg.testset)
+    print(annot)
     print("=" * 20)
     print("=" * 20)
     gt_img_id = d.load_imgid(annot)

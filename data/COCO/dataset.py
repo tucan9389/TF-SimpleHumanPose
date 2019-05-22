@@ -80,11 +80,9 @@ class Dataset(object):
         return val_data
 
     def load_annot(self, db_set):
-        print(db_set)
         if db_set == 'train':
             coco = COCO(self.train_annot_path)
         elif db_set == 'val':
-            print(self.val_annot_path)
             coco = COCO(self.val_annot_path)
         elif db_set == 'test':
             coco = COCO(self.test_annot_path)
